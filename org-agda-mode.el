@@ -32,7 +32,7 @@
   ;; Keep the code block wrappers in Org mode, so they can be folded, etc.
   :head-mode 'org-mode
   :tail-mode 'org-mode
-  :switch-buffer-functions '((lambda (_) (agda2-highlight-reload)))
+  :switch-buffer-functions '((lambda (old new) (agda2-highlight-reload)))
   ;; Disable font-lock-mode, which interferes with Agda annotations,
   ;; and undo the change to indent-line-function Polymode makes.
   :init-functions '((lambda (_) (font-lock-mode 0))
