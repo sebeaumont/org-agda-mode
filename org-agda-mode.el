@@ -27,16 +27,19 @@
 
 (define-innermode poly-org-agda-innermode
   :mode 'agda2-mode
-  :head-matcher "#\\+begin_src agda2"
+  :head-matcher "#\\+begin_src agda"
   :tail-matcher "#\\+end_src"
   ;; Keep the code block wrappers in Org mode, so they can be folded, etc.
   :head-mode 'org-mode
   :tail-mode 'org-mode
-  :switch-buffer-functions '((lambda (old new) (agda2-highlight-reload)))
+  :switch-buffer-functions
+  '((lambda (old new) (agda2-highlight-reload)))
+                             
   ;; Disable font-lock-mode, which interferes with Agda annotations,
   ;; and undo the change to indent-line-function Polymode makes.
-  :init-functions '((lambda (_) (font-lock-mode 0))
-                    (lambda (_) (setq indent-line-function #'indent-relative))))
+  :init-functions
+  '((lambda (_) (font-lock-mode 0))
+    (lambda (_) (setq indent-line-function #'indent-relative))))
 
 (define-polymode org-agda-mode
   :hostmode 'poly-org-agda-hostmode
@@ -49,4 +52,4 @@
 (add-to-list 'auto-mode-alist '("\\.lagda.org" . org-agda-mode))
 
 (provide 'org-agda-mode)
-;;; org-agda-mode ends here
+;;; org-agda-mode.el ends here
