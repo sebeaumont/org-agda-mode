@@ -13,7 +13,7 @@
 (require 'agda2-mode)
 
 (defgroup org-agda-mode nil
-  "org-agda-mode customisations"
+  "Some org-agda-mode customisations."
   :group 'languages)
 
 (defcustom use-agda-input t
@@ -32,8 +32,6 @@
   ;; Keep the code block wrappers in Org mode, so they can be folded, etc.
   :head-mode 'org-mode
   :tail-mode 'org-mode
-  :switch-buffer-functions
-  '((lambda (old new) (agda2-highlight-reload)))
                              
   ;; Disable font-lock-mode, which interferes with Agda annotations,
   ;; and undo the change to indent-line-function Polymode makes.
@@ -44,8 +42,31 @@
 (define-polymode org-agda-mode
   :hostmode 'poly-org-agda-hostmode
   :innermodes '(poly-org-agda-innermode)
+  (setq-local polymode-after-switch-buffer-hook
+              (append '(after-switch-hook) polymode-after-switch-buffer-hook))
   (when use-agda-input (set-input-method "Agda")))
 
+(defun after-switch-hook (_ new)
+  "The after buffer switch hook run with NEW buffer."
+  (when (bufferp new)
+    (let ((new-mode (buffer-local-value 'major-mode new)))
+      ;;(message "switch to: %s" new-mode)
+      (cond ((eq new-mode 'agda2-mode) (agda2-mode-hook new))
+            ((eq new-mode 'org-mode) (org-mode-hook new))))))
+        
+(defun org-mode-hook (buf)
+  "Hook run after entering `org-mode` with BUF."
+  (if (buffer-modified-p buf)
+      (message "dirty-org")
+    (message "clean-org")))
+
+(defun agda2-mode-hook (buf)
+  "Hook run after entering `agda2-mode` with BUF."
+  (if (buffer-modified-p buf)
+      (message "recheck-agda")
+    (agda2-highlight-reload)))
+
+         
 (assq-delete-all 'background agda2-highlight-faces)
 
 ;;;###autoload
