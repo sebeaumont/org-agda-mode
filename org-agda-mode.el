@@ -42,6 +42,7 @@
 (define-polymode org-agda-mode
   :hostmode 'poly-org-agda-hostmode
   :innermodes '(poly-org-agda-innermode)
+  (setq-local org-src-fontify-natively t)
   (setq-local polymode-after-switch-buffer-hook
               (append '(after-switch-hook) polymode-after-switch-buffer-hook))
   (when use-agda-input (set-input-method "Agda")))
