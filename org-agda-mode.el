@@ -42,9 +42,20 @@
 (define-polymode org-agda-mode
   :hostmode 'poly-org-agda-hostmode
   :innermodes '(poly-org-agda-innermode)
-  (setq-local org-src-fontify-natively t)
+  (setq-local org-src-fontify-natively nil)
   (setq-local polymode-after-switch-buffer-hook
               (append '(after-switch-hook) polymode-after-switch-buffer-hook))
+  (setq-local polymode-move-these-minor-modes-from-old-buffer
+              (append '(org-indent-mode)
+                      polymode-move-these-minor-modes-from-old-buffer))
+  (setq-local polymode-run-these-before-change-functions-in-other-buffers
+              (append '(org-before-change-function
+                        org-element--cache-before-change
+                        org-table-remove-rectangle-highlight)
+                      polymode-run-these-before-change-functions-in-other-buffers))
+  (setq-local polymode-run-these-after-change-functions-in-other-buffers
+              (append '(org-element--cache-after-change)
+                      polymode-run-these-after-change-functions-in-other-buffers))
   (when use-agda-input (set-input-method "Agda")))
 
 (defun after-switch-hook (_ new)
