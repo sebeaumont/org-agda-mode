@@ -27,7 +27,7 @@
 
 (define-innermode poly-org-agda-innermode
   :mode 'agda2-mode
-  :head-matcher "#\\+begin_src agda"
+  :head-matcher "#\\+begin_src agda2"
   :tail-matcher "#\\+end_src"
   ;; Keep the code block wrappers in Org mode, so they can be folded, etc.
   :head-mode 'org-mode
@@ -42,20 +42,9 @@
 (define-polymode org-agda-mode
   :hostmode 'poly-org-agda-hostmode
   :innermodes '(poly-org-agda-innermode)
-  (setq-local org-src-fontify-natively nil)
+  (setq-local org-src-fontify-natively t)
   (setq-local polymode-after-switch-buffer-hook
               (append '(after-switch-hook) polymode-after-switch-buffer-hook))
-  (setq-local polymode-move-these-minor-modes-from-old-buffer
-              (append '(org-indent-mode)
-                      polymode-move-these-minor-modes-from-old-buffer))
-  (setq-local polymode-run-these-before-change-functions-in-other-buffers
-              (append '(org-before-change-function
-                        org-element--cache-before-change
-                        org-table-remove-rectangle-highlight)
-                      polymode-run-these-before-change-functions-in-other-buffers))
-  (setq-local polymode-run-these-after-change-functions-in-other-buffers
-              (append '(org-element--cache-after-change)
-                      polymode-run-these-after-change-functions-in-other-buffers))
   (when use-agda-input (set-input-method "Agda")))
 
 (defun after-switch-hook (_ new)
@@ -68,12 +57,14 @@
         
 (defun org-mode-hook (buf)
   "Hook run after entering `org-mode` with BUF."
+  (font-lock-update)
   (if (buffer-modified-p buf)
       (message "dirty-org")
     (message "clean-org")))
 
 (defun agda2-mode-hook (buf)
   "Hook run after entering `agda2-mode` with BUF."
+  ;;(font-lock-mode 0)
   (if (buffer-modified-p buf)
       (message "recheck-agda")
     (agda2-highlight-reload)))
@@ -82,7 +73,7 @@
 (assq-delete-all 'background agda2-highlight-faces)
 
 ;;;###autoload
-(add-to-list 'auto-mode-alist '("\\.lagda.org" . org-agda-mode))
+;;(add-to-list 'auto-mode-alist '("\\.lagda.org" . org-agda-mode))
 
 (provide 'org-agda-mode)
 ;;; org-agda-mode.el ends here
