@@ -64,10 +64,7 @@
 
 (defun agda2-mode-hook (buf)
   "Hook run after entering `agda2-mode` with BUF."
-  ;;(font-lock-mode 0)
-  (if (buffer-modified-p buf)
-      (message "recheck-agda")
-    (agda2-highlight-reload)))
+  (agda2-highlight-reload ))
 
          
 (assq-delete-all 'background agda2-highlight-faces)
