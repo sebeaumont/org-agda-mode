@@ -66,13 +66,20 @@
 
 (defun agda2-mode-hook (buf)
   "Hook run after entering `agda2-mode` with BUF."
-  (agda2-highlight-reload ))
+  ;; do this unconditionally but we seem to lose agda semantic
+  ;; fontification in any case... maybe there's a bigger hammer we can
+  ;; use to re-load the buffer...
+  (agda2-highlight-reload) 
+  (if (buffer-modified-p buf)
+      (message "dirty-agda")
+    (message "clean-agda")))
 
-         
+
+;; can't recall why this is required -- check author's comments
 (assq-delete-all 'background agda2-highlight-faces)
 
 ;;;###autoload
-;;(add-to-list 'auto-mode-alist '("\\.lagda.org" . org-agda-mode))
+(add-to-list 'auto-mode-alist '("\\.lagda.org" . org-agda-mode))
 
 (provide 'org-agda-mode)
 ;;; org-agda-mode.el ends here
