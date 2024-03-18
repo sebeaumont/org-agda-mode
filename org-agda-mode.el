@@ -54,7 +54,9 @@
       ;;(message "switch to: %s" new-mode)
       (cond ((eq new-mode 'agda2-mode) (agda2-mode-hook new))
             ((eq new-mode 'org-mode) (org-mode-hook new))))))
-        
+
+;; TODO some tracing messages here -- still not retaining Agda2 formatting even tho'
+;; still marked as checked checked after we have modified org part of buffer
 (defun org-mode-hook (buf)
   "Hook run after entering `org-mode` with BUF."
   (font-lock-update)
