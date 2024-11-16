@@ -51,31 +51,29 @@
   "The after buffer switch hook run with NEW buffer."
   (when (bufferp new)
     (let ((new-mode (buffer-local-value 'major-mode new)))
-      ;;(message "switch to: %s" new-mode)
       (cond ((eq new-mode 'agda2-mode) (agda2-mode-hook new))
             ((eq new-mode 'org-mode) (org-mode-hook new))))))
 
-;; XXX some tracing messages here -- still not retaining Agda2 formatting even tho'
-;; still marked as checked checked after we have modified org part of buffer
+;; XXX some tracing messages here
 (defun org-mode-hook (buf)
   "Hook run after entering `org-mode` with BUF."
-  (font-lock-update)
+  (font-lock-ensure)
   (if (buffer-modified-p buf)
       (message "dirty-org")
     (message "clean-org")))
 
+;; ok this only works ok if we re-eval this mode once we have it running in the buffer!
 (defun agda2-mode-hook (buf)
   "Hook run after entering `agda2-mode` with BUF."
-  ;; do this unconditionally but we seem to lose agda semantic
-  ;; fontification in any case... maybe there's a bigger hammer we can
-  ;; use to re-load the buffer...
-  (agda2-highlight-reload) 
+  ;; do we really need to turn this off?
+  ;;(font-lock-mode 0)
+  ;; (agda2-load)
   (if (buffer-modified-p buf)
-      (message "dirty-agda")
-    (message "clean-agda")))
+      (agda2-load)
+    (agda2-highlight-reload)))
 
 
-;; can't recall why this is required -- check author's comments
+;; this stops agda rendering the background (org)
 (assq-delete-all 'background agda2-highlight-faces)
 
 ;;;###autoload
